@@ -1,0 +1,161 @@
+/* src/style/SearchCourse.css */
+
+/* Estilos gerais */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+h1 {
+  font-size: 32px;
+  color: #333;
+}
+
+/* Estilo da caixa de busca */
+.search-box {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.search-box input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.search-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.search-btn:hover {
+  background-color: #45a049;
+
+}
+
+.search-btn .fa {
+  margin-right: 5px;
+}
+
+/* Estilo dos resultados de cursos */
+.courses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.course-card {
+  background-color: white;
+  padding: 20px;
+  width: 250px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.course-image {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.course-details {
+  margin-top: 15px;
+}
+
+.course-details h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.course-details p {
+  font-size: 14px;
+  color: #555;
+}
+
+.course-price {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.view-purchases-btn{
+  background-color: #ff0084;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  left: 870px;
+  top: 125px;
+}
+
+.btn-buy {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-buy:hover {
+  background-color: #0056b3;
+}
+
+.add-course-btn-search{
+  width: 10%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 130px;
+    left: 300px;
+}
+.search-course-btn-search{
+  width: 10%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 130px;
+    left:130px ;
+}
+.sair-btn-search{
+  width: 5%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    top: 130px;
+    left:10px ;
+}

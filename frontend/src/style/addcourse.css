@@ -1,0 +1,95 @@
+.add-course-container {
+    width: 70%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 50px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .input-group input,
+  .input-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .input-group textarea {
+    resize: vertical;
+    height: 100px;
+  }
+  
+  .add-course-btn {
+    width: 20%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    right: 40px;
+    transition: background-color 0.3s;
+  }
+
+  .remove-course-btn{
+    width: 20%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+  }
+  .search-course-btn{
+    width: 20%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    left: 250px;
+  }
+
+  .exit-btn{
+    width: 20%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    right: 50px;
+  }
+  
+  .add-course-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-course-btn:active {
+    background-color: #004085;
+  }
+  
