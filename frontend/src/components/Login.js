@@ -44,8 +44,8 @@ const Login = ({ setUserRole, setUserData }) => {
         <button onClick={handleLogin}>Entrar</button>
         <div className="login-links">
           <a href="/cadastro">Cadastre-se</a>
-          <a href="/esqueceu-senha">Esqueceu a senha?</a>
         </div>
+        
       </div>
     </div>
   );

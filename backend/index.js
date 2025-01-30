@@ -12,7 +12,7 @@ const users = [
   { email: 'admin@email.com', password: 'adm', role: 'admin' },
   { email: 'user@email.com', password: '123', role: 'user' },
   { email: 'professor@email.com', password: 'prof123', role: 'teacher' },
-  { email: 'aluno@email.com', password: 'aluno123', role: 'student' },
+  { email: 'airawinnersousa@gmail.com', password: 'aluno123', role: 'student' },
   { email: 'gerente@email.com', password: 'gerente123', role: 'manager' },
   { email: 'dev@email.com', password: 'dev123', role: 'developer' }
 ];
@@ -42,13 +42,13 @@ const sendResetEmail = (email, code) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail', // Ou outro serviço de e-mail
     auth: {
-      user: 'seu-email@gmail.com',
-      pass: 'sua-senha'
+      user: 'airawinnersrt@gmail.com',
+      pass: '3010199530'
     }
   });
 
   const mailOptions = {
-    from: 'seu-email@gmail.com',
+    from: 'airawinnersrt@gmail',
     to: email,
     subject: 'Redefinição de Senha',
     text: `Seu código de redefinição de senha é: ${code}`
@@ -72,7 +72,7 @@ app.post('/login', (req, res) => {
 // Rota para solicitar redefinição de senha
 app.post('/esqueceu-senha', async (req, res) => {
   const { email } = req.body;
-
+  console.log('cheguei aqui');
   const user = users.find(u => u.email === email);
   if (!user) {
     return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
@@ -219,7 +219,7 @@ app.post('/purchases', (req, res) => {
   };
 
   purchases.push(newPurchase);
-
+ 
   console.log("Compra registrada com sucesso:", newPurchase);
   res.status(201).json({ success: true, message: 'Compra registrada com sucesso!', purchase: newPurchase });
 });

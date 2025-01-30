@@ -44,7 +44,8 @@
   
   .login-links {
     display: flex;
-    justify-content: space-between;
+    position: absolute;
+    left: 600px;
     margin-top: 10px;
   }
   

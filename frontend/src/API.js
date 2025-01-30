@@ -6,6 +6,7 @@ const apiUrl = 'http://localhost:3000';  // Atualize com o endpoint correto
 // Função para fazer o login do usuário
 export const loginUser = async (email, password) => {
   try {
+    
     const response = await fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
@@ -13,6 +14,7 @@ export const loginUser = async (email, password) => {
       },
       body: JSON.stringify({ email, password }),
     });
+  
 
     if (!response.ok) {
       throw new Error('Erro ao fazer login');
