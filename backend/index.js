@@ -27,10 +27,13 @@ let courses = [
 
 
 let compras = [
-  { id: 1, name: 'Compra01', description: 'Curso de Js', price: 'R$ 99,90', image: 'logo192.png',data: 'xx/xx/xxxx' },
-  { id: 2, name: 'Compra02', description: 'Curso de Js', price: 'R$ 129,90', image: 'java.png',data:'xx/xx/xxxx' },
-  
+  { id:1, name:'Curso de JS',image:'html.png', description: 'Aprenda a construir sites modernos com HTML5 e CSS3.,', price: 'R$ 129,90',data: '30/01/2025'
+  },
+  { id:2, name:'Curso de HTML e CSS',image:'java.png', description: 'Aprenda a construir sites modernos com HTML5 e CSS3.,', price: 'R$ 129,90',data: '30/01/2025'
+  }
 ];
+
+
 
 // Função para gerar o código de redefinição
 const generateResetCode = () => {
@@ -191,9 +194,10 @@ app.delete('/remove-course/:id', (req, res) => {
 // Estrutura para armazenar compras
 let purchases = [];
 
+// Rota para registrar uma compra
 app.post('/purchases', (req, res) => {
   console.log("Recebendo requisição de compra...");
-  console.log("Dados recebidos:", req.body); // Exibe os dados que o servidor está recebendo
+  console.log("Dados recebidos:", req.body);
 
   const { userId, courseId, quantity, totalPrice } = req.body;
 
@@ -209,19 +213,18 @@ app.post('/purchases', (req, res) => {
   }
 
   const newPurchase = {
-    purchaseId: purchases.length + 1,
-    userId: userId || "Desconhecido",
-    courseId,
-    courseName: course.name,
-    quantity,
-    totalPrice,
-    purchaseDate: new Date().toISOString(),
+    id: compras.length + 1,
+    name: course.name,
+    description: course.description,
+    price: totalPrice,
+    image: course.image,
+    data: new Date().toLocaleDateString(),
   };
 
-  purchases.push(newPurchase);
+  compras.push(newPurchase);
  
   console.log("Compra registrada com sucesso:", newPurchase);
-  res.status(201).json({ success: true, message: 'Compra registrada com sucesso!', purchase: newPurchase });
+  res.status(201).json({ success: true, message: 'Compra registrada com sucesso!', purchase: newPurchase, purchases: compras });
 });
 
 

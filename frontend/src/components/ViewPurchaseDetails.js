@@ -3,37 +3,56 @@ import { useNavigate } from 'react-router-dom';
 import '../style/viewpurchasedetails.css'; // Novo arquivo de estilo
 import { viewPurchaseDetails } from '../API'; // Importando a função de remoção
 
-
-
 const ViewPurchaseDetails = () => {
   const [purchases, setPurchases] = useState([]); // Estado para armazenar as compras
   const [loading, setLoading] = useState(true); // Estado para controlar o carregamento
   const [error, setError] = useState(null); // Estado para capturar erros
 
-  // Usando useEffect para buscar os dados das compras ao carregar o componente
-  useEffect(() => {
-    const fetchPurchases = async () => {
-      try {
-        const data = await viewPurchaseDetails(); // Chama a função sem passar userId
-        alert('Comprasssssss');
-        setPurchases(data); // Atualiza o estado com as compras
-      } catch (err) {
-        setError('Erro ao carregar as compras');
-        alert('Comprasssssss');
-      } finally {
-        setLoading(false); // Finaliza o carregamento
-      }
-    };
+  const fetchPurchases = async () => {
+    try {
+      const response = await viewPurchaseDetails(); // Chama a função de API para buscar as compras
+      setPurchases(response); // Atualiza o estado com as compras
+    } catch (err) {
+      setError('Erro ao carregar as compras');
+    } finally {
+      setLoading(false); // Finaliza o carregamento
+    }
+  };
 
-    fetchPurchases(); // Realiza a busca das compras
-  }, []); // Dependência vazia para rodar apenas uma vez ao montar o componente
+  useEffect(() => {
+    fetchPurchases(); // Carrega as compras ao montar o componente
+  }, []); // Executa apenas uma vez quando o componente é montado
+
+  const handlePurchase = async (purchaseData) => {
+    try {
+      // Aqui você faz a chamada para registrar a compra
+      const response = await fetch('http://localhost:3000/purchases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(purchaseData),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Atualiza as compras após realizar a compra
+        setPurchases(result.purchases);
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      alert('Erro ao realizar a compra');
+    }
+  };
 
   if (loading) {
-    return <p>Carregando...</p>; // Exibindo uma mensagem de carregamento
+    return <p>Carregando...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>; // Exibindo um erro caso ocorra
+    return <p>{error}</p>;
   }
 
   return (
@@ -49,7 +68,11 @@ const ViewPurchaseDetails = () => {
               <div className="purchase-details">
                 <h2>{purchase.name}</h2>
                 <p>{purchase.description}</p>
-                <p className="purchase-price">{purchase.price}</p>
+                <div className="price-row">
+                  <span>Preço:</span>
+                  <span className="purchase-price">{purchase.price}</span>
+                </div>
+                <p className="purchase-date">{purchase.data}</p>
               </div>
             </div>
           ))}

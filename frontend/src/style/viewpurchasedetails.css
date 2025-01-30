@@ -1,67 +1,91 @@
 /* Estilos gerais */
 .purchase-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  h1 {
-    font-size: 32px;
-    color: #333;
-  }
-  
-  /* Lista de compras */
-  .purchases-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 600px;
-  }
-  
-  .purchase-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .purchase-image {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-    border-radius: 8px;
-  }
-  
-  .purchase-details {
-    margin-top: 15px;
-  }
-  
-  .purchase-price {
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
-  /* Botão de voltar */
-  .back-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-  }
-  
-  .back-btn:hover {
-    background-color: #0056b3;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+h1 {
+  font-size: 32px;
+  color: #333;
+}
+
+/* Lista de compras */
+.purchases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 800px; /* Aumentando a largura para se assemelhar a uma tabela */
+}
+
+.purchase-card {
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row; /* Alterando para exibir como uma linha */
+  align-items: center;
+  justify-content: space-between; /* Espaçamento entre os itens */
+  text-align: left;
+}
+
+.purchase-image {
+  width: 60px; /* Diminuindo a imagem */
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.purchase-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 200px; /* Limitar a largura das informações */
+}
+
+.purchase-details h2 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.purchase-details p {
+  font-size: 12px;
+  margin: 0;
+}
+
+/* Estilizando a tabela de compras */
+.purchase-details .price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.purchase-price {
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+  margin: 5px 0;
+}
+
+/* Botão de voltar */
+.back-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.back-btn:hover {
+  background-color: #0056b3;
+}
