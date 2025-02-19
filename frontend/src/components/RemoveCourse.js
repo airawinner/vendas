@@ -1,13 +1,12 @@
-import React, { useState, useEffect, use } from 'react';
-import { getCoursesByVendorId, deleteCourse } from '../API'; // Importando a função de remoção
+import React, { useState, useEffect } from 'react';
+import { getCoursesByVendorId, inactivateCourse, activateCourse } from '../API'; // Importando as funções de ativação e inativação
 import '../style/SearchCourse.css';
 import '../style/Course.css';
 import { useNavigate } from 'react-router-dom';
 import '../style/removecourse.css';
 
-const SearchCourse = ({ userData }) => {
+const RemoveCourse = ({ userData }) => {
   const navigate = useNavigate();
- 
   
   const [query, setQuery] = useState('');
   const [courses, setCourses] = useState([]);
@@ -41,16 +40,25 @@ const SearchCourse = ({ userData }) => {
     }
   };
 
-  // Função para remover um curso
-  const handleRemoveCourse = async (courseId) => {
+  // Função para mudar o status de um curso
+  const handleMudaStatusCourse = async (courseId, currentStatus) => {
     try {
-      await deleteCourse(courseId);
-      setCourses(courses.filter(course => course.id !== courseId));
-      alert('Curso deletado com sucesso!');
+      if (currentStatus === 'ativo') {
+        await inactivateCourse(courseId);
+        alert('Curso inativado com sucesso!');
+      } else {
+        await activateCourse(courseId);
+        alert('Curso ativado com sucesso!');
+      }
+      setCourses(courses.map(course => 
+        course.id === courseId ? { ...course, status: currentStatus === 'ativo' ? 'inativo' : 'ativo' } : course
+      ));
+
+      //recarrega a página
       window.location.reload();
     } catch (error) {
-      console.error('Erro ao deletar curso', error);
-      alert('Erro ao deletar curso, tente novamente.');
+      console.error('Erro ao mudar status do curso', error);
+      alert('Erro ao mudar status do curso, tente novamente.');
     }
   };
 
@@ -86,9 +94,10 @@ const SearchCourse = ({ userData }) => {
               <div className="course-details">
                 <h2>{course.titulo}</h2>
                 <p>{course.descricao}</p>
+                <p>{course.status}</p>
                 <p className="course-price">{formatPrice(course.preco)}</p>
-                <button className="btn-remove" onClick={() => handleRemoveCourse(course.id)}>
-                  Remover
+                <button className="btn-remove" onClick={() => handleMudaStatusCourse(course.id, course.status)}>
+                  Mudar status do curso
                 </button>
               </div>
             </div>
@@ -104,4 +113,4 @@ const SearchCourse = ({ userData }) => {
   );
 };
 
-export default SearchCourse;
+export default RemoveCourse;

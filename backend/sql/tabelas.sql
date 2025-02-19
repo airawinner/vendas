@@ -1,6 +1,7 @@
--- Tabela Vendedor
+CREATE schema vendas;
 use vendas;
 
+-- Tabela Vendedor
 CREATE TABLE Vendedor (
 id INT AUTO_INCREMENT PRIMARY KEY,
 nome VARCHAR(100) NOT NULL,

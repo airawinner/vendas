@@ -10,10 +10,10 @@ const AddCourse = ({ userData }) => {
   const [courseName, setCourseName] = useState('');
   const [coursePrice, setCoursePrice] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
-  const [courseImage, setCourseImage] = useState('');
+  const [courseAccessLink, setCourseAccessLink] = useState('');
 
   const handleAddCourse = async () => {
-    if (!courseName || !coursePrice || !courseDescription) {
+    if (!courseName || !coursePrice || !courseDescription || !courseAccessLink) {
       alert('Por favor, preencha todos os campos obrigatórios!');
       return;
     }
@@ -24,7 +24,7 @@ const AddCourse = ({ userData }) => {
         descricao: courseDescription,
         data_anuncio: new Date().toISOString().slice(0, 19).replace('T', ' '), // Formato de data para MySQL
         status: 'ativo',
-        acesso_curso: courseImage || '',
+        acesso_curso: courseAccessLink,
         vendedor_id: userData.id 
       };
       console.log('Dados do curso:', courseData);
@@ -78,13 +78,13 @@ const AddCourse = ({ userData }) => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="course-image">Link da Imagem (opcional)</label>
+        <label htmlFor="course-access-link">Link de Acesso ao Curso</label>
         <input 
           type="text" 
-          id="course-image" 
-          placeholder="URL da imagem do curso (opcional)" 
-          value={courseImage} 
-          onChange={e => setCourseImage(e.target.value)} 
+          id="course-access-link" 
+          placeholder="URL de acesso ao curso" 
+          value={courseAccessLink} 
+          onChange={e => setCourseAccessLink(e.target.value)} 
         />
       </div>
       <button onClick={handleAddCourse} className="add-course-btn">Adicionar Curso</button>

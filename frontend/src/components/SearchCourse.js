@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando o useNavigate
-import { getAvailableCourses, registerPurchase } from '../API';
+import { getAvailableCourses, registerPurchase, updateUserEmailAluno,  updateUserEmailVendedor, deleteUserAluno, deleteUserVendedor} from '../API';
 import '../style/SearchCourse.css'; // Estilos para SearchCourse
 import '../style/Course.css'; // Estilos para Course
 import '../style/modal.css';
@@ -20,6 +20,8 @@ const SearchCourse = ({ userData }) => {
   const [purchaseError, setPurchaseError] = useState(null);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [installments, setInstallments] = useState('1'); 
+  const [newEmail, setNewEmail] = useState(''); 
+  const [showEmailModal, setShowEmailModal] = useState(false); 
 
 
 
@@ -51,6 +53,41 @@ const SearchCourse = ({ userData }) => {
       console.error('Erro ao registrar compra', error);
       setPurchaseError('Erro ao registrar compra. Tente novamente.');
       setPurchaseSuccess(false);
+    }
+  };
+
+  const handleEmailChange = async (e) => {
+    e.preventDefault();
+    try {
+      let updatedUser;
+      if (userData.role === 'user') {
+        updatedUser = await updateUserEmailAluno(userData.id, newEmail);
+      } else if (userData.role === 'admin') {
+        updatedUser = await updateUserEmailVendedor(userData.id, newEmail);
+      }
+
+      setShowEmailModal(false); // Fecha o modal
+      alert('Email atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao atualizar email', error);
+      alert('Erro ao atualizar email. Tente novamente.');
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      if (userData.role === 'user') {
+        await deleteUserAluno(userData.id);
+      } else if (userData.role === 'admin') {
+        await deleteUserVendedor(userData.id);
+      }
+
+
+      alert('Usuário deletado com sucesso!');
+      navigate('/'); // Redireciona para a página inicial após deletar o usuário
+    } catch (error) {
+      console.error('Erro ao deletar usuário', error);
+      alert('Erro ao deletar usuário. Tente novamente.');
     }
   };
 
@@ -96,6 +133,14 @@ const SearchCourse = ({ userData }) => {
     setSelectedCourse(null); // Reseta o curso selecionado
   };
 
+  const openEmailModal = () => {
+    setShowEmailModal(true);
+  };
+
+  const closeEmailModal = () => {
+    setShowEmailModal(false);
+  };
+
   // Função para navegar até a página de compras somente se for um aluno
   const handleViewPurchases = () => {
     navigate('/view-purchase-details'); // Redireciona para a página de detalhes de compras
@@ -107,6 +152,14 @@ const SearchCourse = ({ userData }) => {
 
   return (
     <div className="search-container">
+      {/* Botão para deletar usuário */}
+            <button onClick={handleDeleteUser} className="delete-user-btn">
+        Deletar Usuário
+      </button>
+      {/* Botão para alterar email */}
+      <button onClick={openEmailModal} className="change-email-btn">
+        Alterar seu email
+      </button>
       <h1>Pesquisar Cursos</h1>
       <div className="search-box">
         <input
@@ -215,8 +268,34 @@ const SearchCourse = ({ userData }) => {
           </div>
         </div>
       )}
+
+      {/* Modal para alteração de email */}
+            {showEmailModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Alterar Email</h2>
+            <form className="email-form" onSubmit={handleEmailChange}>
+              <div className="input-group">
+                <label htmlFor="new-email">Novo Email</label>
+                <input
+                  type="email"
+                  id="new-email"
+                  placeholder="Digite o novo email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="submit-btn">Atualizar Email</button>
+            </form>
+            <button className="close-btn" onClick={closeEmailModal}>Fechar</button>
+          </div>
+        </div>
+      )}
+
+
       <div className="add-course-container">
-      <button onClick={() => navigate('/remove-course')} className="search-course-btn-search">Remover Curso</button>
+      <button onClick={() => navigate('/remove-course')} className="search-course-btn-search">Mudar status curso</button>
       <button onClick={() => navigate('/add-course')} className="add-course-btn-search">Adicionar Curso</button>
       <button onClick={() => navigate('/')} className="sair-btn-search">Sair</button>
     </div>

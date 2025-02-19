@@ -32,10 +32,13 @@ comprasRoutes.post('/', async (req, res) => {
 
     // Verificar se o aluno já possui uma compra pendente
     const checkSql = `
-    SELECT COUNT(*) AS count FROM Compra c
-    join aluno a on c.aluno_id = a.id
-    join pagamento p on p.compra_id = c.id
-    WHERE aluno_id = ? AND p.status != "pago"
+    SELECT COUNT(*) AS count
+    FROM Compra c
+    JOIN aluno a ON c.aluno_id = a.id
+    JOIN pagamento p ON p.compra_id = c.id
+    WHERE aluno_id = 2
+    GROUP BY c.aluno_id
+    HAVING SUM(p.status != 'pago') > 0
     `;    
     const [existingPurchases] = await query(connection, checkSql, [aluno_id]);
 

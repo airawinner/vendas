@@ -100,6 +100,34 @@ cursosRoutes.get('/compras/:id', async (req, res) => {
   }
 });
 
+//rota para tornar status do curso inativo por id
+cursosRoutes.put('/inativar/:id', async (req, res) => {
+  try {
+    const sql = 'UPDATE curso SET status = "inativo" WHERE id = ?';
+    const connection = connectToDatabase();
+    const result = await query(connection, sql, [req.params.id]);
+    connection.end();
+    res.json(result);
+  } catch (error) {
+    console.log('Erro ao inativar curso:', error);
+    res.status(500).send("Erro ao inativar curso");
+  }
+});
+
+//rota para tornar status do curso ativo por id
+cursosRoutes.put('/ativar/:id', async (req, res) => {
+  try {
+    const sql = 'UPDATE curso SET status = "ativo" WHERE id = ?';
+    const connection = connectToDatabase();
+    const result = await query(connection, sql, [req.params.id]);
+    connection.end();
+    res.json(result);
+  } catch (error) {
+    console.log('Erro ao ativar curso:', error);
+    res.status(500).send("Erro ao ativar curso");
+  }
+});
+
 
 
 module.exports = cursosRoutes;

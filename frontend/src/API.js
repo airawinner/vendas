@@ -71,13 +71,77 @@ export const viewPurchaseDetails = async (alunoId) => {
   }
 };
 
-// Função para cadastrar um novo usuário
-export const registerUser = async (name, email, password) => {
+export const registerUserAluno = async (formData) => {
   try {
-    const response = await axios.post(`${API_URL}/cadastro`, { name, email, password });
+    console.log('formData', formData);
+    const response = await axios.post(`${API_URL}/alunos`, formData);
     return response.data;
   } catch (error) {
-    console.error("Erro ao cadastrar usuário:", error);
+    throw error;
+  }
+};
+
+export const registerUserVendedor = async (formData) => {
+  try {
+    const response = await axios.post(`${API_URL}/vendedores`, formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserEmailAluno = async (id, email) => {
+  try {
+    const response = await axios.put(`${API_URL}/alunos/email/${id}`, { email });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserEmailVendedor = async (id, email) => {
+  try {
+    const response = await axios.put(`${API_URL}/vendedores/email/${id}`, { email });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const deleteUserAluno = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/alunos/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteUserVendedor = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/vendedores/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const inactivateCourse = async (courseId) => {
+  try {
+    const response = await axios.put(`${API_URL}/cursos/inativar/${courseId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const activateCourse = async (courseId) => {
+  try {
+    const response = await axios.put(`${API_URL}/cursos/ativar/${courseId}`);
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };
