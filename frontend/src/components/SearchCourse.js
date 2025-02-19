@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando o useNavigate
-import { searchCourses, registerPurchase } from '../API';
+import { getAvailableCourses, registerPurchase } from '../API';
 import '../style/SearchCourse.css'; // Estilos para SearchCourse
 import '../style/Course.css'; // Estilos para Course
 import '../style/modal.css';
 import '../style/removecourse.css';
 
-const SearchCourse = () => {
+const SearchCourse = ({ userData }) => {
 
   const [query, setQuery] = useState('');
-  const [userData, setUserData] = useState(null);
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,89 +19,64 @@ const SearchCourse = () => {
   const [cvv, setCvv] = useState('');
   const [purchaseError, setPurchaseError] = useState(null);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
+  const [installments, setInstallments] = useState('1'); 
+
 
 
   const [selectedCourse, setSelectedCourse] = useState(null); // Curso selecionado
   const navigate = useNavigate(); // Hook para navegação
+
   const handlePurchase = async (e) => {
     e.preventDefault();
-  
-    if (!cardNumber || !expiryDate || !cvv) {
-      setPurchaseError("Preencha todos os campos do cartão.");
-      return;
-    }
-  
-    if (!selectedCourse) {
-      setPurchaseError("Nenhum curso selecionado.");
-      return;
-    }
-  
     const purchaseData = {
-      userId: "12345", // Simule um ID de usuário até ter autenticação real
-      courseId: selectedCourse.id,
-      quantity: 1, // Supondo que o usuário compra apenas 1 curso
-      totalPrice: selectedCourse.price
+      data_compra: new Date().toISOString().slice(0, 19).replace('T', ' '), 
+      forma_pagamento: 'cartao_credito',
+      aluno_id: userData.id,
+      curso_id: selectedCourse.id,
+      status: 'pago',
+      data_pagamento: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      valor_pago: selectedCourse.preco,
+      quantidade_parcelas: installments,
+      valor_parcela: selectedCourse.preco / installments
     };
-  
-    console.log("Enviando compra para o servidor:", purchaseData);
-  
+
+    console.log('Dados da compra:', purchaseData);
+
     try {
-      const response = await fetch("http://localhost:3000/purchases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(purchaseData)
-      });
-  
-      const result = await response.json();
-      if (response.ok) {
-        setPurchaseSuccess(true);
-        setPurchaseError(null);
-        console.log("Compra realizada com sucesso!", result);
-        setTimeout(() => {
-          closeModal();
-        }, 2000);
-      } else {
-        setPurchaseError(result.message || "Erro ao processar a compra.");
-      }
+      await registerPurchase(purchaseData);
+      setPurchaseSuccess(true);
+      setPurchaseError('');
+      window.location.reload();
     } catch (error) {
-      console.error("Erro ao enviar compra:", error);
-      setPurchaseError("Erro ao conectar ao servidor.");
+      console.error('Erro ao registrar compra', error);
+      setPurchaseError('Erro ao registrar compra. Tente novamente.');
+      setPurchaseSuccess(false);
     }
   };
-  
-  
-
 
   // Função para carregar cursos
   useEffect(() => {
-    const loadCourses = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchCourses = async () => {
       try {
-        const results = await searchCourses(''); // Busca cursos sem filtro
-        if (results && results.length > 0) {
-          setCourses(results);
-          setFilteredCourses(results);
-        } else {
-          setCourses([]);
-          setFilteredCourses([]);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar cursos', error);
-        setError('Falha ao carregar cursos. Tente novamente mais tarde.');
-      } finally {
+        const data = await getAvailableCourses();
+        console.log('Cursos disponíveis:', data);
+        setCourses(data);
+        setFilteredCourses(data);
         setLoading(false);
+      } catch (error) {
+        console.error('Erro ao buscar cursos disponíveis', error);
       }
     };
 
-    loadCourses();
+    console.log('Dados do usuário:', userData);
+    fetchCourses();
   }, []);
 
   // Função para filtrar cursos
   const handleSearch = () => {
     if (query) {
       const filtered = courses.filter(course =>
-        course.name.toLowerCase().includes(query.toLowerCase())
+        course.titulo.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredCourses(filtered);
     } else {
@@ -122,9 +96,13 @@ const SearchCourse = () => {
     setSelectedCourse(null); // Reseta o curso selecionado
   };
 
-  // Função para navegar até a página de compras
+  // Função para navegar até a página de compras somente se for um aluno
   const handleViewPurchases = () => {
     navigate('/view-purchase-details'); // Redireciona para a página de detalhes de compras
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   };
 
   return (
@@ -146,9 +124,11 @@ const SearchCourse = () => {
       </div>
 
       {/* Botão para ver compras */}
-      <button onClick={handleViewPurchases} className="view-purchases-btn">
-        Ver Compras
-      </button>
+      {userData.role === 'user' && (
+            <button onClick={handleViewPurchases} className="view-purchases-btn">
+              Ver Compras
+            </button>
+      )}
 
       {loading && <p>Carregando...</p>}
       {error && <p className="error-message">{error}</p>}
@@ -157,14 +137,15 @@ const SearchCourse = () => {
         {filteredCourses.length > 0 ? (
           filteredCourses.map(course => (
             <div key={course.id} className="course-card">
-              <img src={course.image} alt={course.name} className="course-image" />
               <div className="course-details">
-                <h2>{course.name}</h2>
-                <p>{course.description}</p>
-                <p className="course-price">{course.price}</p>
-                <button className="btn-buy" onClick={() => handleBuyClick(course)}>
-                  Comprar
-                </button>
+                <h2>{course.titulo}</h2>
+                <p>{course.descricao}</p>
+                <p className="course-price">{formatPrice(course.preco)}</p>
+                {userData.role === 'user' && (
+                  <button className="btn-buy" onClick={() => handleBuyClick(course)}>
+                    Comprar
+                  </button>
+                )}
               </div>
             </div>
           ))
@@ -208,6 +189,21 @@ const SearchCourse = () => {
                   value={cvv}
                   onChange={(e) => setCvv(e.target.value)}
                 />
+              </div>
+              <div className="input-group">
+                <label htmlFor="installments">Quantidade de Parcelas</label>
+                <select
+                  id="installments"
+                  value={installments}
+                  onChange={(e) => setInstallments(e.target.value)}
+                >
+                  <option value="1">1x</option>
+                  <option value="2">2x</option>
+                  <option value="3">3x</option>
+                  <option value="4">4x</option>
+                  <option value="5">5x</option>
+                  <option value="6">6x</option>
+                </select>
               </div>
 
               {purchaseError && <p className="error-message">{purchaseError}</p>}

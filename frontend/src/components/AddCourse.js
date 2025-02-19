@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { addCourse } from '../API';
 import { useNavigate } from 'react-router-dom';
 import '../style/addcourse.css';
+const API_URL = 'http://localhost:3000';
 
 const AddCourse = ({ userData }) => {
   const navigate = useNavigate();
@@ -18,16 +19,29 @@ const AddCourse = ({ userData }) => {
     }
     try {
       const courseData = {
-        name: courseName,
-        price: coursePrice,
-        description: courseDescription,
-        image: courseImage || ''
+        titulo: courseName,
+        preco: coursePrice,
+        descricao: courseDescription,
+        data_anuncio: new Date().toISOString().slice(0, 19).replace('T', ' '), // Formato de data para MySQL
+        status: 'ativo',
+        acesso_curso: courseImage || '',
+        vendedor_id: userData.id 
       };
+      console.log('Dados do curso:', courseData);
       await addCourse(courseData, userData);
       alert('Curso adicionado com sucesso!');
+      //recarregar a página
+      window.location.reload();
     } catch (error) {
       console.error('Erro ao adicionar curso', error);
       alert('Erro ao adicionar curso, tente novamente.');
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setCoursePrice(value);
     }
   };
 
@@ -51,7 +65,7 @@ const AddCourse = ({ userData }) => {
           id="course-price" 
           placeholder="Preço do curso" 
           value={coursePrice} 
-          onChange={e => setCoursePrice(e.target.value)} 
+          onChange={handlePriceChange} 
         />
       </div>
       <div className="input-group">

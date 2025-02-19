@@ -1,44 +1,41 @@
-import express from 'express';
-import users from '../models/users.js';
+const express = require('express');
+const { connectToDatabase, query } = require('../db/db.js');
 
-const router = express.Router();
+const authRoutes = express.Router();
 
-// Rota de login
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  console.log('Corpo da requisição:', req.body);
-  console.log(`Tentando fazer login com: email: ${email}, senha: ${password}`);
-  
-  const user = users.find(u => u.email === email && u.password === password);
-
-  if (user) {
-    res.json({ success: true, role: user.role, token: 'fake-jwt-token' });
-  } else {
-    res.status(401).json({ success: false, message: 'Credenciais inválidas' });
-  }
-});
-
-// Rota para cadastro de novo usuário
-router.post('/cadastro', (req, res) => {
-  const { name, email, password } = req.body;
-  const userExists = users.some(u => u.email === email);
-  if (userExists) {
-    return res.status(400).json({ success: false, message: 'E-mail já cadastrado.' });
-  }
-  const newUser = { name, email, password, role: 'user' };
-  users.push(newUser);
-  res.status(201).json({ success: true, message: 'Cadastro realizado com sucesso!', user: newUser });
-});
-
-// Rota para solicitar redefinição de senha
-router.post('/esqueceu-senha', (req, res) => {
+// Rota para login
+authRoutes.post('/login', async (req, res) => {
   const { email } = req.body;
-  const user = users.find(u => u.email === email);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+
+  try {
+    const connection = connectToDatabase();
+
+    // Verificar se o email pertence a um vendedor
+    let sql = 'SELECT * FROM vendedor WHERE email = ?';
+    let result = await query(connection, sql, [email]);
+
+    if (result.length > 0) {
+      const vendedor = result[0];
+      connection.end();
+      return res.json({ role: 'admin', ...vendedor });
+    }
+
+    // Verificar se o email pertence a um aluno
+    sql = 'SELECT * FROM aluno WHERE email = ?';
+    result = await query(connection, sql, [email]);
+
+    if (result.length > 0) {
+      const aluno = result[0];
+      connection.end();
+      return res.json({ role: 'user', ...aluno });
+    }
+
+    connection.end();
+    res.status(401).send('Email não encontrado');
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    res.status(500).send('Erro ao fazer login');
   }
-  // Lógica para enviar código de redefinição de senha
-  res.status(200).json({ success: true, message: 'Código de redefinição enviado para o e-mail.' });
 });
 
-export default router;
+module.exports = authRoutes;

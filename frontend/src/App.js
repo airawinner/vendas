@@ -36,8 +36,8 @@ function App() {
 
                 {userRole ? (
                     <>
-                        <Route path="/search-course" element={<SearchCourse />} />
-                        <Route path="/view-purchase-details" element={<ViewPurchaseDetails />} />
+                        <Route path="/search-course" element={<SearchCourse userData={userData} />} />
+                        <Route path="/view-purchase-details" element={<ViewPurchaseDetails userData={userData}/>} />
                         <Route
                             path="/add-course"
                             element={

@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import '../style/viewpurchasedetails.css'; // Novo arquivo de estilo
 import { viewPurchaseDetails } from '../API'; // Importando a função de remoção
 
-const ViewPurchaseDetails = () => {
+const ViewPurchaseDetails = ({userData}) => {
   const [purchases, setPurchases] = useState([]); // Estado para armazenar as compras
   const [loading, setLoading] = useState(true); // Estado para controlar o carregamento
   const [error, setError] = useState(null); // Estado para capturar erros
 
   const fetchPurchases = async () => {
     try {
-      const response = await viewPurchaseDetails(); // Chama a função de API para buscar as compras
+      const response = await viewPurchaseDetails(userData.id); // Chama a função de API para buscar as compras
       setPurchases(response); // Atualiza o estado com as compras
     } catch (err) {
       setError('Erro ao carregar as compras');
@@ -55,6 +55,16 @@ const ViewPurchaseDetails = () => {
     return <p>{error}</p>;
   }
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  };
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('pt-BR', options);
+  };
+
+
   return (
     <div className="purchase-container">
       <h1>Detalhes das Compras</h1>
@@ -64,15 +74,15 @@ const ViewPurchaseDetails = () => {
         <div className="purchases-list">
           {purchases.map((purchase) => (
             <div key={purchase.id} className="purchase-card">
-              <img src={purchase.image} alt={purchase.name} className="purchase-image" />
               <div className="purchase-details">
-                <h2>{purchase.name}</h2>
-                <p>{purchase.description}</p>
+                <h2>{purchase.titulo}</h2>
+                <p>{purchase.descricao}</p>
                 <div className="price-row">
                   <span>Preço:</span>
-                  <span className="purchase-price">{purchase.price}</span>
+                  <span className="purchase-price">{formatPrice(purchase.preco)}</span>
                 </div>
-                <p className="purchase-date">{purchase.data}</p>
+                <p className="purchase-date">Data da Compra: {formatDate(purchase.data_compra)}</p>
+                <p className="purchase-acesso">Link de acesso: {purchase.acesso_curso}</p>
               </div>
             </div>
           ))}

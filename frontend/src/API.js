@@ -1,20 +1,18 @@
 // src/API.js
 import axios from 'axios';
 
-const apiUrl = 'http://localhost:3000';  // Atualize com o endpoint correto
+const API_URL = 'http://localhost:3000';
 
 // Função para fazer o login do usuário
-export const loginUser = async (email, password) => {
+export const loginUser = async (email) => {
   try {
-    
     const response = await fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email }),
     });
-  
 
     if (!response.ok) {
       throw new Error('Erro ao fazer login');
@@ -27,12 +25,56 @@ export const loginUser = async (email, password) => {
   }
 };
 
+export const getAvailableCourses = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/cursos/disponiveis`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
+export const getCoursesByVendorId = async (vendorId) => {
+  try {
+    const response = await axios.get(`${API_URL}/cursos/vendedor/${vendorId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCourse = async (courseId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/cursos/${courseId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const registerPurchase = async (purchaseData) => {
+  try {
+    const response = await axios.post(`${API_URL}/compras`, purchaseData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const viewPurchaseDetails = async (alunoId) => {
+  try {
+    const response = await axios.get(`${API_URL}/cursos/compras/${alunoId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Função para cadastrar um novo usuário
 export const registerUser = async (name, email, password) => {
   try {
-    const response = await axios.post(`${apiUrl}/cadastro`, { name, email, password });
+    const response = await axios.post(`${API_URL}/cadastro`, { name, email, password });
     return response.data;
   } catch (error) {
     console.error("Erro ao cadastrar usuário:", error);
@@ -43,7 +85,7 @@ export const registerUser = async (name, email, password) => {
 // Função para enviar pedido de redefinição de senha
 export const forgotPassword = async (email) => {
   try {
-    const response = await axios.post(`${apiUrl}/esqueceu-senha`, { email });
+    const response = await axios.post(`${API_URL}/esqueceu-senha`, { email });
     return response.data;
   } catch (error) {
     console.error("Erro ao solicitar redefinição de senha:", error);
@@ -54,7 +96,7 @@ export const forgotPassword = async (email) => {
 // Função para pesquisar cursos
 export const searchCourses = async (query) => {
   try {
-    const response = await axios.get(`${apiUrl}/search-course`, { params: { query } });
+    const response = await axios.get(`${API_URL}/search-course`, { params: { query } });
     return response.data;
   } catch (error) {
     console.error("Erro ao pesquisar cursos:", error);
@@ -66,17 +108,20 @@ export const searchCourses = async (query) => {
 // Função para adicionar curso (somente admin)
 export const addCourse = async (courseData, userData) => {
   try {
-    const response = await axios.post(`${apiUrl}/add-course`, { courseData, userData });
+    const response = await axios.post(`${API_URL}/cursos`, courseData, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
     return response.data;
   } catch (error) {
-    console.error("Erro ao adicionar curso:", error);
     throw error;
   }
 };
 
 export const removeCourse = async (courseId, userData) => {
   try {
-    const response = await axios.delete(`${apiUrl}/remove-course/${courseId}`, {
+    const response = await axios.delete(`${API_URL}/remove-course/${courseId}`, {
       data: { userData }, // Enviando userData para verificação de permissões
       headers: {
         'Content-Type': 'application/json',
@@ -92,41 +137,6 @@ export const removeCourse = async (courseId, userData) => {
 
 
 
-// Função para pesquisar cursos
-export const viewPurchaseDetails = async (query) => {
-  try {
-    const response = await axios.get(`${apiUrl}/view-purchase-details`, { params: { query } });
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao pesquisar cursos:", error);
-    throw error;
-  }
-};
-
-
-
-// Função para registrar uma compra
-export const registerPurchase = async (course) => {
-  try {
-    const purchaseData = {
-      id: course.id,
-      name: course.name,
-      description: course.description,
-      price: course.price,
-      image: course.image,
-      date: new Date().toLocaleDateString('pt-BR') // Formato xx/xx/xxxx
-    };
-
-    alert('Dados sendo passados');
-    
-    const response = await axios.post(`${apiUrl}/purchases`, purchaseData);
-  
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao registrar compra:', error);
-    throw error;
-  }
-};
 
 
 

@@ -10,9 +10,11 @@ const Login = ({ setUserRole, setUserData }) => {
 
   const handleLogin = async () => {
     try {
-      const data = await loginUser(email, password);
+      const data = await loginUser(email);
       setUserRole(data.role);
       setUserData(data);
+
+      console.log(data);
 
       if (data.role === 'admin') {
         navigate('/add-course');

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { searchCourses, removeCourse } from '../API'; // Importando a função de remoção
+import React, { useState, useEffect, use } from 'react';
+import { getCoursesByVendorId, deleteCourse } from '../API'; // Importando a função de remoção
 import '../style/SearchCourse.css';
 import '../style/Course.css';
 import { useNavigate } from 'react-router-dom';
@@ -16,28 +16,24 @@ const SearchCourse = ({ userData }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const loadCourses = async () => {
-      setLoading(true);
-      setError(null);
+    const fetchCourses = async () => {
       try {
-        const results = await searchCourses('');
-        setCourses(results);
-        setFilteredCourses(results);
+        const data = await getCoursesByVendorId(userData.id);
+        setCourses(data);
+        setFilteredCourses(data);
+        console.log('Cursos do vendedor no estado:', data); 
       } catch (error) {
-        console.error('Erro ao carregar cursos', error);
-        setError('Falha ao carregar cursos. Tente novamente mais tarde.');
-      } finally {
-        setLoading(false);
+        console.error('Erro ao buscar cursos do vendedor', error);
       }
     };
 
-    loadCourses();
-  }, []);
+    fetchCourses();
+  }, [userData.id]);
 
   const handleSearch = () => {
     if (query) {
       const filtered = courses.filter(course =>
-        course.name.toLowerCase().includes(query.toLowerCase())
+        course.titulo.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredCourses(filtered);
     } else {
@@ -48,16 +44,18 @@ const SearchCourse = ({ userData }) => {
   // Função para remover um curso
   const handleRemoveCourse = async (courseId) => {
     try {
-      await removeCourse(courseId, userData);
-      alert('Curso removido com sucesso!');
-
-      // Atualizar a lista de cursos após a remoção
+      await deleteCourse(courseId);
       setCourses(courses.filter(course => course.id !== courseId));
-      setFilteredCourses(filteredCourses.filter(course => course.id !== courseId));
+      alert('Curso deletado com sucesso!');
+      window.location.reload();
     } catch (error) {
-      console.error('Erro ao remover curso', error);
-      alert('Erro ao remover curso. Tente novamente.');
+      console.error('Erro ao deletar curso', error);
+      alert('Erro ao deletar curso, tente novamente.');
     }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   };
 
   return (
@@ -85,11 +83,10 @@ const SearchCourse = ({ userData }) => {
         {filteredCourses.length > 0 ? (
           filteredCourses.map(course => (
             <div key={course.id} className="course-card">
-              <img src={course.image} alt={course.name} className="course-image" />
               <div className="course-details">
-                <h2>{course.name}</h2>
-                <p>{course.description}</p>
-                <p className="course-price">{course.price}</p>
+                <h2>{course.titulo}</h2>
+                <p>{course.descricao}</p>
+                <p className="course-price">{formatPrice(course.preco)}</p>
                 <button className="btn-remove" onClick={() => handleRemoveCourse(course.id)}>
                   Remover
                 </button>
