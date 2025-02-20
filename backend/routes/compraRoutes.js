@@ -36,13 +36,13 @@ comprasRoutes.post('/', async (req, res) => {
     FROM Compra c
     JOIN aluno a ON c.aluno_id = a.id
     JOIN pagamento p ON p.compra_id = c.id
-    WHERE aluno_id = 2
+    WHERE c.aluno_id = ?
     GROUP BY c.aluno_id
     HAVING SUM(p.status != 'pago') > 0
     `;    
     const [existingPurchases] = await query(connection, checkSql, [aluno_id]);
 
-    if (existingPurchases.count > 0) {
+    if (existingPurchases && existingPurchases.count > 0) {
       connection.end();
       return res.status(400).send("O aluno só pode realizar uma compra por vez");
     }
